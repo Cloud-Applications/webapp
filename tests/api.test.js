@@ -61,16 +61,6 @@ describe('api.js tests', () => {
             done();
           });
         });
-    //     // it('should return user', (done) => {
-    //     //     chai.request(api)
-    //     //     .get('/v1/user/self')
-    //     //     .set({ "Authorization": {Username: 'test', Password: 'test'} })
-    //     //     .end((err, res) => {
-    //     //         console.log(err, 'err', res.body);
-    //     //         res.should.have.status(403);
-    //     //     done();
-    //     //   });
-    //     // });
     });
     describe('/Update users', () => {
         it('check authorization headers', (done) => {

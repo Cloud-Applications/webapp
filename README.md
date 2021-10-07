@@ -37,9 +37,15 @@ Password Encryption
 - **Methods: GET** : 
     - Description: Get User Data.
     - Query Strings: none
+    - url : /v1/user/self
 - **Methods: POST** : 
     - Description: Create a new user.
     - Body: first_name, last_name, phone, password
+    - url : /v1/user
 - **Methods: PUT** : 
     - Description: Update a user.
     - Body: first_name, last_name, phone, password
+    - url : /v1/user/self
+
+## External Libraries
+bycrypt
