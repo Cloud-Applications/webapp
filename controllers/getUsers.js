@@ -11,6 +11,12 @@ const getUsers =  (req, res) => {
     const encoded = authorization.substring(6);
     const decoded = Buffer.from(encoded, 'base64').toString('ascii');
     const [username, password] = decoded.split(':');
+    if (!username || !password) {
+        return res.status(403).json({
+            status: 403,
+            msg: 'Forbidden'
+        })
+    }
     const isEmailCorrect = validateEmail(username);
     if (!isEmailCorrect) {
         return res.status(400).json({
@@ -50,7 +56,7 @@ const getUsers =  (req, res) => {
             } else {
                 return res.status(400).json({
                     status: 400,
-                    msg: 'Username doesn\'t exist'
+                    msg: 'Username doesn\'t exist. Please create a new user'
                 }) 
             }
         })

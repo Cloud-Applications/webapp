@@ -12,19 +12,32 @@ const createUsers =  (req, res) => {
         last_name,
         password
     } = req.body;
-    if(!req.body.length) {
+    if(!Object.keys(req.body).length) {
         return res.status(400).json({
             status: 400,
             msg: 'No information provided to create a user'
         })
     }
+
+    const data = Object.keys(req.body);
+    const filter = ['first_name','last_name','password','username']
+    for(i in data){
+        if(!filter.includes(data[i])){
+            return res.status(400).json({
+                status: 400,
+                msg: 'Only First, LastName, Password, and Username is required'
+            })
+        }
+    }
+
     const isEmailCorrect = validateEmail(username);
-    if (!isEmailCorrect || password.length < 5 || !first_name.length || !last_name.length) {
+    if (!password || !first_name || !last_name ||!isEmailCorrect || password.length < 5 || !first_name.length || !last_name.length) {
         return res.status(400).json({
             status: 400,
             msg: 'Incorrect data format'
         })
     }
+    
     const id = uuidv4();
     const account_created = new Date().toISOString();
     const account_updated = new Date().toISOString();
