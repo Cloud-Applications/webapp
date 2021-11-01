@@ -22,7 +22,7 @@ const updateData = (username, password, req, res) => {
         }
     }
 
-    if(req.body?.username && req.body?.username !== username) {
+    if(req.body && req.username && req.body.username !== username) {
         return res.status(400).json({
             status: 400,
             msg: 'Incorrect username passed'
@@ -102,7 +102,7 @@ const updateUser = (req, res) => {
     const fetchUser = `Select password from users where username = $1`
     client.query(fetchUser, [username])
         .then(data => {
-            if (data ?.rows.length) {
+            if (data && data.rows.length) {
                 compare(password, data.rows[0].password)
                     .then(test => {
                         if (test) return updateData(username, password, req, res);
