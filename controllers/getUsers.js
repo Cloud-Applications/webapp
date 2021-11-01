@@ -27,7 +27,7 @@ const getUsers =  (req, res) => {
     const fetchUser = `Select password from users where username = $1`
     client.query(fetchUser, [username])
         .then(data => {
-            if (data?.rows.length) {
+            if (data && data.rows.length) {
                 compare(password, data.rows[0].password)
                     .then(test => {
                         if(test) {
@@ -38,10 +38,9 @@ const getUsers =  (req, res) => {
                                         error: "User not found"
                                     });
                                 } else {
-                                    res.status(200).json({
-                                        status: 200,
-                                        result
-                                    });
+                                    res.status(200).json(
+                                        result.rows[0]
+                                    );
                                 }
                             });
                             client.end;
