@@ -42,7 +42,7 @@ jobs:
     - name: Built Deployment Artifacts
       run: |
         mkdir codedeploy_artifact
-        zip -r ${{ env.ARTIFACT_NAME }} webapp codeDeploy/*.sh appspec.yml --exclude .env
+        zip -r ${{ env.ARTIFACT_NAME }}
         pwd
         ls -al
         mv ${{ env.ARTIFACT_NAME }} codedeploy_artifact
