@@ -16,7 +16,7 @@ const deleteUtility = (userId, res) => {
                 if(data) {
                     client.query(`DELETE FROM photos WHERE user_id = $1`, [userId], (error, r) => {
                         if (!result.rows.length) {
-                            res.status(404).json("No record found');
+                            res.status(404).json("No record found");
                         } else {
                             res.status(204).json(result.rows[0]);
                         }

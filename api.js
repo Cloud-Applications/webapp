@@ -40,7 +40,7 @@ app.put('/v1/user/self', updateUser);
 
 app.get('/v1/user/self/pic', getPic);
 app.post('/v1/user/self/pic', uploadPic);
-// app.put('/v1/user/self/pic', updatePic);
+
 app.delete('/v1/user/self/pic', deletePic);
 
 module.exports = app;

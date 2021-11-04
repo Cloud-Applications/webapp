@@ -24,7 +24,7 @@
     "mocha": "^9.1.2"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha 'tests/*.js'"
   },
   "author": "",
   "license": "ISC"
