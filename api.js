@@ -29,7 +29,7 @@ client.connect((err) => {
 app.use(bodyParser.json());
 const id = uuidv4();
 
-app.get('/v1/user/self', () => getUsers);
+app.get('/v1/user/self', getUsers);
 
 app.post('/v1/user', createUsers);
 
