@@ -13,7 +13,7 @@ const {
     v4: uuidv4
 } = require('uuid');
 app.listen(3300, () => {
-    console.log("Sever is now listening at port 3300");
+    // console.log("Sever is now listening at port 3300");
 })
 client.connect((err) => {
     if (err) throw err;
@@ -40,7 +40,7 @@ app.put('/v1/user/self', updateUser);
 
 app.get('/v1/user/self/pic', getPic);
 app.post('/v1/user/self/pic', uploadPic);
-// app.put('/v1/user/self/pic', updatePic);
+
 app.delete('/v1/user/self/pic', deletePic);
 
 module.exports = app;
