@@ -73,3 +73,4 @@ let date = new Date().toISOString().slice(0, 10);
         }
     });
 }
+exports.uploadPic = uploadPic;
