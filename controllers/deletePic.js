@@ -27,7 +27,7 @@ const deletePic =  (req, res) => {
         .then(data => {
             if (data && data.rows.length) {
                 let userId = data.rows[0].id;
-                deleteUtility(userId);
+                deleteUtility(userId, res);
             } else {
                 return res.status(401).json('Unauthorized No such user exists');
             }
