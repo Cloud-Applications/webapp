@@ -3,7 +3,7 @@ const AWS = require("aws-sdk");
 AWS.config.update({region: "us-east-1"})
 const s3 = new AWS.S3()
 const deleteUtility = (userId, res) => {
-    client.query(`Select path from photos where user_id = $1`, [userId], (err, result) => {
+    client.query(`Select path, id, user_id from photos where user_id = $1`, [userId], (err, result) => {
         if (!result.rows.length) {
             res.status(401).json('Unauthorized');
         } else {
@@ -12,7 +12,7 @@ const deleteUtility = (userId, res) => {
                     res.status(401).json({test_error: error});
                 }
                 if (!r.rows.length) {
-                    res.status(404).json("No record found");
+                    res.status(404).json({row: r, result: result, id: result.rows[0].id, userId: userId, userId_test: result.rows[0].userId});
                 } else {
                     s3.deleteObject({
                         Bucket: process.env.S3_BUCKET,
