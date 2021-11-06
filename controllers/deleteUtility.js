@@ -7,22 +7,41 @@ const deleteUtility = (userId, res) => {
         if (!result.rows.length) {
             res.status(401).json('Unauthorized');
         } else {
-            console.log(result.rows[0].path, 'result.rows[0].path')
-            s3.deleteObject({
-                Bucket: process.env.S3_BUCKET,
-                Key: result.rows[0].path
-            },function (err,data){
-                console.log(error, 'data', data);
-                if(data) {
-                    client.query(`DELETE FROM photos WHERE user_id = $1`, [userId], (error, r) => {
-                        if (!result.rows.length) {
-                            res.status(404).json("No record found");
+            client.query(`DELETE FROM photos WHERE user_id = $1`, [userId], (error, r) => {
+                if(error) {
+                    res.status(401).json({test_error: error});
+                }
+                if (!r.rows.length) {
+                    res.status(404).json("No record found");
+                } else {
+                    s3.deleteObject({
+                        Bucket: process.env.S3_BUCKET,
+                        Key: result.rows[0].path
+                    },function (err,data){
+                        if(data) {
+                            res.status(204).json(result.rows[0], data, r);
                         } else {
-                            res.status(204).json(result.rows[0]);
+                            res.status(400).json(result.rows[0], err);
                         }
                     })
                 }
             })
+            // console.log(result.rows[0].path, 'result.rows[0].path')
+            // s3.deleteObject({
+            //     Bucket: process.env.S3_BUCKET,
+            //     Key: result.rows[0].path
+            // },function (err,data){
+            //     console.log(error, 'data', data);
+            //     if(data) {
+            //         client.query(`DELETE FROM photos WHERE user_id = $1`, [userId], (error, r) => {
+            //             if (!result.rows.length) {
+            //                 res.status(404).json("No record found");
+            //             } else {
+            //                 res.status(204).json(result.rows[0]);
+            //             }
+            //         })
+            //     }
+            // })
         }
     });
 }
