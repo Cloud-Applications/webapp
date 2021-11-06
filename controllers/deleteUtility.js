@@ -12,7 +12,7 @@ const deleteUtility = (userId, res) => {
                     res.status(401).json({test_error: error});
                 }
                 if (!r.rows.length) {
-                    res.status(404).json("No record found");
+                    res.status(404).json({row: r, result: result});
                 } else {
                     s3.deleteObject({
                         Bucket: process.env.S3_BUCKET,
