@@ -11,8 +11,8 @@ const deleteUtility = (userId, res) => {
                 if(error) {
                     res.status(401).json({test_error: error});
                 }
-                if (!r.rows.length) {
-                    res.status(404).json({row: r, result: result, id: result.rows[0].id, userId: userId, userId_test: result.rows[0].userId});
+                if (!r.rowCount) {
+                    res.status(404).json({row: r, result: result, id: result.rows[0].id, userId: userId, userId_test: result.rows[0].user_id});
                 } else {
                     s3.deleteObject({
                         Bucket: process.env.S3_BUCKET,
