@@ -29,15 +29,15 @@ client.connect((err) => {
 app.use(bodyParser.json());
 const id = uuidv4();
 
-app.get('/v1/user/self', getUsers);
+app.get('/v2/user/self', getUsers);
 
-app.post('/v1/user', createUsers);
+app.post('/v2/user', createUsers);
 
-app.put('/v1/user/self', updateUser);
+app.put('/v2/user/self', updateUser);
 
-app.get('/v1/user/self/pic', getPic);
-app.post('/v1/user/self/pic', uploadPic);
+app.get('/v2/user/self/pic', getPic);
+app.post('/v2/user/self/pic', uploadPic);
 
-app.delete('/v1/user/self/pic', deletePic);
+app.delete('/v2/user/self/pic', deletePic);
 
 module.exports = app;
