@@ -5,6 +5,9 @@ const {
 } = require('uuid');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+const SDC = require('statsd-client');
+const logger = require('../logger');
+sdc = new SDC({host: 'localhost', port: 8125});
 const updateData = (username, password, req, res) => {
     const {
         account_created,
@@ -15,6 +18,7 @@ const updateData = (username, password, req, res) => {
     const filter = ['first_name','last_name','password','username']
     for(i in data){
         if(!filter.includes(data[i])){
+            logger('No extra information allowed while updating user');
             return res.status(400).json({
                 status: 400,
                 msg: 'No extra information allowed'
@@ -23,12 +27,14 @@ const updateData = (username, password, req, res) => {
     }
 
     if(req.body && req.username && req.body.username !== username) {
+        logger('Incorrect username passed to update a user');
         return res.status(400).json({
             status: 400,
             msg: 'Incorrect username passed'
         })
     }
     if (account_created || account_updated || id) {
+        logger('No additional information can be changed while updating user');
         return res.status(400).json({
             status: 400,
             msg: 'No additional information can be changed'
@@ -36,6 +42,7 @@ const updateData = (username, password, req, res) => {
     }
     const isEmailCorrect = validateEmail(username);
     if (!isEmailCorrect) {
+        logger('Incorrect email format for updating user');
         return res.status(400).json({
             status: 400,
             msg: 'Incorrect email'
@@ -46,24 +53,32 @@ const updateData = (username, password, req, res) => {
 
     const text1 = 'Select first_name, last_name, password from users where username =$1 '
     const value1 = [username];
-
+    const get_user_start_time = Date.now();
     client.query(text1, value1, (error, results) => {
+        const get_user_end_time = Date.now();
+        let get_user_time_elapsed = get_user_end_time - get_user_start_time;
+        sdc.timing('query.get.user.update.api.call', get_user_time_elapsed);
         if (results.rows.length) {
             const first_name = req.body.first_name ? req.body.first_name : results.rows[0].first_name;
             const last_name = req.body.last_name ? req.body.last_name : results.rows[0].last_name;
             const password = req.body.password ? req.body.password : results.rows[0].password;
             bcrypt.genSalt(saltRounds, function (err, salt) {
                 bcrypt.hash(password, salt, function (err, hash) {
+                    const get_user_update_start_time = Date.now();
                     const text = 'UPDATE public.users SET first_name=$1, last_name=$2, password=$3, account_updated=$4 WHERE username =$5'
                     const values = [first_name, last_name, hash, accountUpdated, username];
                     client.query(text, values, (err, result) => {
+                        const get_user_update_end_time = Date.now();
+                        let get_user_update_time_elapsed = get_user_update_end_time - get_user_update_start_time;
+                        sdc.timing('query.user.update.api.call', get_user_update_time_elapsed);
                         if (err) {
+                            logger('Error while updating user');
                             res.status(400).json({
                                 status: 400,
                                 error: err
                             });
                         } else {
-
+                            logger('User data updated sucessfully');
                             res.status(204).json({
                                 status: 204,
                                 description: 'Values are updated'
@@ -74,6 +89,7 @@ const updateData = (username, password, req, res) => {
                 });
             });
         } else {
+            logger('No such user found');
             return res.status(400).json({
                 status: 400,
                 error: 'No email found'
@@ -83,8 +99,12 @@ const updateData = (username, password, req, res) => {
 }
 
 const updateUser = (req, res) => {
+    let startTime = Date.now();
+    sdc.increment('endpoint.user.update');
+    logger('Made user update api call');
     const authorization = req.headers.authorization;
     if(!authorization) {
+        logger('No authorization provided to update a user');
         return res.status(403).json({
             status: 403,
             msg: 'Forbidden Request'
@@ -94,30 +114,40 @@ const updateUser = (req, res) => {
     const decoded = Buffer.from(encoded, 'base64').toString('ascii');
     const [username, password] = decoded.split(':');
     if (!username || !password) {
+        logger('Incorrect username or password provided to update a user');
         return res.status(403).json({
             status: 403,
             msg: 'Forbidden Request'
         })
     }
     const fetchUser = `Select password from users where username = $1`
+    const get_user_password_start_time = Date.now();
     client.query(fetchUser, [username])
         .then(data => {
+            const get_user_password_end_time = Date.now();
+            let get_user_password_time_elapsed = get_user_password_end_time - get_user_password_start_time;
+            sdc.timing('query.user.get.password.update.user.api', get_user_password_time_elapsed);
             if (data && data.rows.length) {
                 compare(password, data.rows[0].password)
                     .then(test => {
                         if (test) return updateData(username, password, req, res);
+                        logger('Incorrect password provided in authorization to update a user');
                         return res.status(400).json({
                             status: 400,
                             msg: 'Incorrect password'
                         });
                     })
             } else {
+                logger('Incorrect username provided to update a user');
                 return res.status(400).json({
                     status: 400,
                     msg: 'Username incorrect'
                 });
             }
         })
+        let endTime = Date.now();
+        var elapsed = endTime - startTime;
+        sdc.timing('timing.user.update.api', elapsed);
 };
 
 exports.updateUser = updateUser;
