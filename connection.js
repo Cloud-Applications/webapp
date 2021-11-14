@@ -6,7 +6,9 @@ const db = new Client({
     user: process.env.DB_USERNAME,
     port: process.env.PORT || '3000',
     password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME
+    database: process.env.DB_NAME,
+    metrics_hostname: "localhost",
+    metrics_port: 8125
 })
 
 module.exports = db
