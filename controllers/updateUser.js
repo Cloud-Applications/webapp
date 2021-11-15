@@ -18,7 +18,7 @@ const updateData = (username, password, req, res) => {
     const filter = ['first_name','last_name','password','username']
     for(i in data){
         if(!filter.includes(data[i])){
-            logger('No extra information allowed while updating user');
+            logger.error('No extra information allowed while updating user');
             return res.status(400).json({
                 status: 400,
                 msg: 'No extra information allowed'
@@ -27,14 +27,14 @@ const updateData = (username, password, req, res) => {
     }
 
     if(req.body && req.username && req.body.username !== username) {
-        logger('Incorrect username passed to update a user');
+        logger.error('Incorrect username passed to update a user');
         return res.status(400).json({
             status: 400,
             msg: 'Incorrect username passed'
         })
     }
     if (account_created || account_updated || id) {
-        logger('No additional information can be changed while updating user');
+        logger.error('No additional information can be changed while updating user');
         return res.status(400).json({
             status: 400,
             msg: 'No additional information can be changed'
@@ -42,7 +42,7 @@ const updateData = (username, password, req, res) => {
     }
     const isEmailCorrect = validateEmail(username);
     if (!isEmailCorrect) {
-        logger('Incorrect email format for updating user');
+        logger.error('Incorrect email format for updating user');
         return res.status(400).json({
             status: 400,
             msg: 'Incorrect email'
@@ -72,13 +72,14 @@ const updateData = (username, password, req, res) => {
                         let get_user_update_time_elapsed = get_user_update_end_time - get_user_update_start_time;
                         sdc.timing('query.user.update.api.call', get_user_update_time_elapsed);
                         if (err) {
-                            logger('Error while updating user');
+console.log(process.env.host)
+                            logger.error('Error while updating user');
                             res.status(400).json({
                                 status: 400,
                                 error: err
                             });
                         } else {
-                            logger('User data updated sucessfully');
+                            logger.info('User data updated sucessfully');
                             res.status(204).json({
                                 status: 204,
                                 description: 'Values are updated'
@@ -89,7 +90,7 @@ const updateData = (username, password, req, res) => {
                 });
             });
         } else {
-            logger('No such user found');
+            logger.error('No such user found');
             return res.status(400).json({
                 status: 400,
                 error: 'No email found'
@@ -101,10 +102,10 @@ const updateData = (username, password, req, res) => {
 const updateUser = (req, res) => {
     let startTime = Date.now();
     sdc.increment('endpoint.user.update');
-    logger('Made user update api call');
+    logger.info('Made user update api call');
     const authorization = req.headers.authorization;
     if(!authorization) {
-        logger('No authorization provided to update a user');
+        logger.error('No authorization provided to update a user');
         return res.status(403).json({
             status: 403,
             msg: 'Forbidden Request'
@@ -114,7 +115,7 @@ const updateUser = (req, res) => {
     const decoded = Buffer.from(encoded, 'base64').toString('ascii');
     const [username, password] = decoded.split(':');
     if (!username || !password) {
-        logger('Incorrect username or password provided to update a user');
+        logger.error('Incorrect username or password provided to update a user');
         return res.status(403).json({
             status: 403,
             msg: 'Forbidden Request'
@@ -131,14 +132,14 @@ const updateUser = (req, res) => {
                 compare(password, data.rows[0].password)
                     .then(test => {
                         if (test) return updateData(username, password, req, res);
-                        logger('Incorrect password provided in authorization to update a user');
+                        logger.error('Incorrect password provided in authorization to update a user');
                         return res.status(400).json({
                             status: 400,
                             msg: 'Incorrect password'
                         });
                     })
             } else {
-                logger('Incorrect username provided to update a user');
+                logger.error('Incorrect username provided to update a user');
                 return res.status(400).json({
                     status: 400,
                     msg: 'Username incorrect'

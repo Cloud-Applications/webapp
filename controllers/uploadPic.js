@@ -25,7 +25,7 @@ const uploadPic = (req, res) => {
     } = req.body;
     let startTime = Date.now();
     sdc.increment('endpoint.user.upload.pic');
-    logger('Made user upload pic api call');
+    logger.info('Made user upload pic api call');
     let date = new Date().toISOString().slice(0, 10);
     const fetchUser = `Select id from users where username = $1`
     const get_user_start_time = Date.now();
@@ -34,7 +34,7 @@ const uploadPic = (req, res) => {
         let get_user_time_elapsed = get_user_end_time - get_user_start_time;
         sdc.timing('query.get.user.upload.pic.api.call', get_user_time_elapsed);
         if (!result.rows.length) {
-            logger('Bad Request, No such user found for uploading pic');
+            logger.error('Bad Request, No such user found for uploading pic');
             res.status(400).json({
                 status: 400,
                 error: "Bad Request, No such user found"
@@ -87,10 +87,10 @@ const uploadPic = (req, res) => {
                     sdc.timing('query.upload.pic.api.call', get_delete_time_elapsed);
                     console.log(err, 'result')
                     if (err) {
-                        logger('Bad Request while inserting for uploading pic');
+                        logger.error('Bad Request while inserting for uploading pic');
                         res.status(400).json('Bad Request');
                     } else {
-                        logger('Photo uploaded successfully');
+                        logger.error('Photo uploaded successfully');
                         res.status(201).json(result.rows[0]);
                     }
                 });

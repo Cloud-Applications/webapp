@@ -13,7 +13,7 @@ const {
     v4: uuidv4
 } = require('uuid');
 app.listen(3300, () => {
-    // console.log("Sever is now listening at port 3300");
+    console.log("Sever is now listening at port 3300");
 })
 client.connect((err) => {
     if (err) throw err;
@@ -29,15 +29,15 @@ client.connect((err) => {
 app.use(bodyParser.json());
 const id = uuidv4();
 
-app.get('/v2/user/self', getUsers);
+app.get('/v1/user/self', getUsers);
 
-app.post('/v2/user', createUsers);
+app.post('/v1/user', createUsers);
 
-app.put('/v2/user/self', updateUser);
+app.put('/v1/user/self', updateUser);
 
-app.get('/v2/user/self/pic', getPic);
-app.post('/v2/user/self/pic', uploadPic);
+app.get('/v1/user/self/pic', getPic);
+app.post('/v1/user/self/pic', uploadPic);
 
-app.delete('/v2/user/self/pic', deletePic);
+app.delete('/v1/user/self/pic', deletePic);
 
 module.exports = app;
