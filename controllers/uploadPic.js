@@ -84,13 +84,13 @@ const uploadPic = (req, res) => {
                 client.query(text, values, (err, result) => {
                     const upload_pic_end_time = Date.now();
                     let upload_pic_time_elapsed = upload_pic_end_time - upload_pic_start_time;
-                    sdc.timing('query.upload.pic.api.call', get_delete_time_elapsed);
-                    console.log(err, 'result')
+                    sdc.timing('query.upload.pic.api.call', upload_pic_time_elapsed);
+                    // console.log(err, 'result')
                     if (err) {
                         logger.error('Bad Request while inserting for uploading pic');
                         res.status(400).json('Bad Request');
                     } else {
-                        logger.error('Photo uploaded successfully');
+                        logger.info('Photo uploaded successfully');
                         res.status(201).json(result.rows[0]);
                     }
                 });
