@@ -6,10 +6,10 @@ sdc = new SDC({host: 'localhost', port: 8125});
 const getUsers =  (req, res) => {
     let startTime = Date.now();
     sdc.increment('endpoint.user.get');
-    logger('Made user get api call');
+    logger.info('Made user get api call');
     const authorization = req.headers.authorization;
     if (!authorization) {
-        logger('No authorization provided to get a user');
+        logger.error('No authorization provided to get a user');
         return res.status(403).json({
             status: 403,
             msg: 'Forbidden'
@@ -19,7 +19,7 @@ const getUsers =  (req, res) => {
     const decoded = Buffer.from(encoded, 'base64').toString('ascii');
     const [username, password] = decoded.split(':');
     if (!username || !password) {
-        logger('Incorrect username or password provided to get a user');
+        logger.error('Incorrect username or password provided to get a user');
         return res.status(403).json({
             status: 403,
             msg: 'Forbidden'
@@ -27,7 +27,7 @@ const getUsers =  (req, res) => {
     }
     const isEmailCorrect = validateEmail(username);
     if (!isEmailCorrect) {
-        logger('Incorrect email type provided to get a user');
+        logger.error('Incorrect email type provided to get a user');
         return res.status(400).json({
             status: 400,
             msg: 'Incorrect email type'
@@ -50,13 +50,13 @@ const getUsers =  (req, res) => {
                                 let get_user_time_elapsed = get_user_end_time - get_user_start_time;
                                 sdc.timing('query.user.get.api', get_user_time_elapsed);
                                 if (!result.rows.length) {
-                                    logger('User not found while fetching him for get user request');
+                                    logger.error('User not found while fetching him for get user request');
                                     res.status(500).json({
                                         status: 403,
                                         error: "User not found"
                                     });
                                 } else {
-                                    logger('User successfully found for get user request');
+                                    logger.info('User successfully found for get user request');
                                     res.status(200).json(
                                         result.rows[0]
                                     );
@@ -64,7 +64,7 @@ const getUsers =  (req, res) => {
                             });
                             client.end;
                         } else {
-                            logger('Incorrect password provided to get a user');
+                            logger.error('Incorrect password provided to get a user');
                             return res.status(400).json({
                                 status: 400,
                                 msg: 'Incorrect password in authorization'
@@ -73,7 +73,7 @@ const getUsers =  (req, res) => {
                         
                     });
             } else {
-                logger('Username doesn\'t exist. Please create a new user');
+                logger.error('Username doesn\'t exist. Please create a new user');
                 return res.status(400).json({
                     status: 400,
                     msg: 'Username doesn\'t exist. Please create a new user'
@@ -81,7 +81,7 @@ const getUsers =  (req, res) => {
             }
         })
         .catch(err => {
-            logger('API not found for get user request');
+            logger.error('API not found for get user request');
             return res.status(500).json({
                 status: 500,
                 msg: 'API not found'

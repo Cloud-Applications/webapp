@@ -8,10 +8,12 @@ const {
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 sdc = new SDC({host: 'localhost', port: 8125});
+const a = () => {}
+console.log(typeof a, 'logger');
 const createUsers =  (req, res) => {
     let startTime = Date.now();
     sdc.increment('endpoint.user.post');
-    logger('Made user create api call');
+    logger.info('Made user create api call');
     const {
         username,
         first_name,
@@ -19,7 +21,7 @@ const createUsers =  (req, res) => {
         password
     } = req.body;
     if(!Object.keys(req.body).length) {
-        logger('No information provided to create a user');
+        logger.error('No information provided to create a user');
         return res.status(400).json({
             status: 400,
             msg: 'No information provided to create a user'
@@ -30,7 +32,7 @@ const createUsers =  (req, res) => {
     const filter = ['first_name','last_name','password','username']
     for(i in data){
         if(!filter.includes(data[i])){
-            logger('Only First, LastName, Password, and Username is required for creating user');
+            logger.error('Only First, LastName, Password, and Username is required for creating user');
             return res.status(400).json({
                 status: 400,
                 msg: 'Only First, LastName, Password, and Username is required'
@@ -40,7 +42,7 @@ const createUsers =  (req, res) => {
 
     const isEmailCorrect = validateEmail(username);
     if (!password || !first_name || !last_name ||!isEmailCorrect || password.length < 5 || !first_name.length || !last_name.length) {
-        logger('Incorrect data format for creating user');
+        logger.error('Incorrect data format for creating user');
         return res.status(400).json({
             status: 400,
             msg: 'Incorrect data format'
@@ -66,12 +68,12 @@ const createUsers =  (req, res) => {
                     client.query(text, values, (err, result) => {
                         
                         if (err) {
-                            logger('Error inserting data to database while creating user');
+                            logger.error('Error inserting data to database while creating user');
                             res.status(400).json({
                                 status: 400,
                             });
                         } else {
-                            logger('User succcessfully created');
+                            logger.info('User succcessfully created');
                             res.status(200).json({
                                 status: 200,
                                 result: result.rows[0]
@@ -83,7 +85,7 @@ const createUsers =  (req, res) => {
                     });
                     client.end;
                 } else {
-                    logger('Email already in use while creating user');
+                    logger.error('Email already in use while creating user');
                     return res.status(400).json({
                         status: 400,
                         msg: 'Email already in use'
