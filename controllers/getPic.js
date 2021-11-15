@@ -37,22 +37,21 @@ const getPic =  (req, res) => {
     const get_user_start_time = Date.now();
     client.query(fetchUser, [username])
         .then(data => {
+            const get_user_end_time = Date.now();
             let get_user_time_elapsed = get_user_end_time - get_user_start_time;
             sdc.timing('query.user.get.pic.api', get_user_time_elapsed);
-            logger.error('Incorrect email format in authorization provided for getting users');
             if (data && data.rows.length) {
                 let userId = data.rows[0].id;
                 const get_user_photo_start_time = Date.now();
                 client.query(`Select id, user_id, file_name, url, upload_date from photos where user_id = $1`, [userId], (err, result) => {
-                    console.log(err, result, 'get');
                     const get_user_photo_end_time = Date.now();
                     let get_user_photo_time_elapsed = get_user_photo_end_time - get_user_photo_start_time;
                     sdc.timing('query.user.get.pic.api.call', get_user_photo_time_elapsed);
-                    logger.error('Incorrect email format in authorization provided for getting users');
                     if (!result.rows.length) {
+                        logger.error('Image not found');
                         res.status(500).json({
                             status: 403,
-                            error: "User not found"
+                            error: "Image not found"
                         });
                     } else {
                         logger.info('Fetched Picture Successfully')
@@ -63,14 +62,15 @@ const getPic =  (req, res) => {
                 logger.error('User not found')
                 return res.status(404).json({
                     status: 404,
-                    msg: 'Not Found'
+                    msg: 'User Not Found'
                 }) 
             }
         })
         .catch(err => {
+            logger.error('Incorrect get photo query')
             return res.status(500).json({
                 status: 500,
-                msg: 'API not found'
+                msg: 'Incorrect get photo query'
             }) 
         })
         let endTime = Date.now();
