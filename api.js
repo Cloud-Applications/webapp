@@ -30,7 +30,9 @@ app.use(bodyParser.json());
 const id = uuidv4();
 
 app.get('/v1/user/self', getUsers);
-
+app.get('/healthstatus', (req, res) => {
+    res.status(200)
+});
 app.post('/v1/user', createUsers);
 
 app.put('/v1/user/self', updateUser);
