@@ -31,7 +31,7 @@ const id = uuidv4();
 
 app.get('/v1/user/self', getUsers);
 app.get('/healthstatus', (req, res) => {
-    res.status(200)
+    res.send(200)
 });
 app.post('/v1/user', createUsers);
 
