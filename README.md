@@ -6,7 +6,7 @@ Created an node application to perform CRU operations using http request
 
 ## How To Run
 * Download Node.js from the official site
-* Clone the repository into your local machine using git clone command
+* Clone the repository into your local machine using git clone command.
 * Install pgAdmin on your devise and set username and password, and also create a database and table</li>
 * Go to your project folder using cd
 * Write command npm i to install all dependencies
