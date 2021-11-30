@@ -5,6 +5,7 @@ var crypt = require('crypto');
 const {validateEmail, compare, getToken} = require('../helperFunctions');
 const logger = require('../logger');
 const jwt = require('jsonwebtoken');
+AWS.config.update({region: 'us-east-1'});
 var dynamo = new AWS.DynamoDB({ region: 'us-east-1'})
 var DynamoDB = new AWS.DynamoDB.DocumentClient({service: dynamo});
 const {
@@ -128,7 +129,7 @@ const createUsers =  (req, res) => {
             
                                 }).catch(
                                 function(err) {
-                                    logger.error('promise dynamo db');
+                                    logger.error('promise dynamo db', err);
                                     console.error(err, err.stack);
                                     // res.status(500).send(err)
                                 }); 
