@@ -129,7 +129,7 @@ const createUsers =  (req, res) => {
             
                                 }).catch(
                                 function(err) {
-                                    logger.error('promise dynamo db', err);
+                                    logger.error('promise dynamo db');
                                     console.error(err, err.stack);
                                     // res.status(500).send(err)
                                 }); 
