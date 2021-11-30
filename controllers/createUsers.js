@@ -5,7 +5,8 @@ var crypt = require('crypto');
 const {validateEmail, compare, getToken} = require('../helperFunctions');
 const logger = require('../logger');
 const jwt = require('jsonwebtoken');
-var DynamoDB = new AWS.DynamoDB.DocumentClient();
+var dynamo = new AWS.DynamoDB({ region: 'us-east-1'})
+var DynamoDB = new AWS.DynamoDB.DocumentClient({service: dynamo});
 const {
     v4: uuidv4
 } = require('uuid');
