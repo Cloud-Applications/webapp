@@ -88,7 +88,7 @@ const createUsers =  (req, res) => {
                             });
                         } else {
                             const token = generateAccessToken(username);
-                            const dbdata = {username, token}
+                            const dbdata = {token}
                             logger.info({token: token, msg: 'token for dynamo'});
                             DynamoDB.put(dbdata, function (error, data) {
                                 if (error){
