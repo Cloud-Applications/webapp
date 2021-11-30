@@ -88,8 +88,8 @@ const createUsers =  (req, res) => {
                             });
                         } else {
                             const token = generateAccessToken(username);
-                            const dbdata = {username, token}
-                            logger.info('before dynamo');
+                            const dbdata = {token}
+                            logger.info({token: token, msg: 'token for dynamo'});
                             DynamoDB.put(dbdata, function (error, data) {
                                 if (error){
                                     logger.error('error');
@@ -105,6 +105,7 @@ const createUsers =  (req, res) => {
                                 Message: JSON.stringify({username, token, messageType: "Create User", domainName: process.env.DOMAINNAME, first_name: first_name}),
                                 TopicArn: process.env.TOPICARN,
                             }
+                            logger.info({username, token, messageType: "Create User", domainName: process.env.DOMAINNAME, first_name: first_name, topic: process.env.TOPICARN, msg: 'check params'});
                             let publishTextPromise = SNS.publish(params).promise();
                             publishTextPromise.then(
                                 function(data) {
