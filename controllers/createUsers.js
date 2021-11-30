@@ -87,8 +87,18 @@ const createUsers =  (req, res) => {
                                 status: 400,
                             });
                         } else {
+                            const current = Math.floor(Date.now() / 1000)
+                            let ttl = 60 * 5
+                            const expiresIn = ttl + current
                             const token = generateAccessToken(username);
-                            const dbdata = {token}
+                            const dbdata = {
+                                Item: {
+                                    token,
+                                    username,
+                                    ttl: expiresIn,
+                                },
+                                TableName: "dynamo_db"
+                            }
                             logger.info({token: token, msg: 'token for dynamo'});
                             DynamoDB.put(dbdata, function (error, data) {
                                 if (error){
@@ -97,7 +107,6 @@ const createUsers =  (req, res) => {
                                 }
                                 else {
                                     logger.info('success dynamo');
-                                    // sendEmail(message, question, answer);
                                 }
                             });
                             logger.info('after dynamo');
@@ -106,6 +115,7 @@ const createUsers =  (req, res) => {
                                 TopicArn: process.env.TOPICARN,
                             }
                             logger.info({username, token, messageType: "Create User", domainName: process.env.DOMAINNAME, first_name: first_name, topic: process.env.TOPICARN, msg: 'check params'});
+                            logger.info({domainName: process.env.DOMAINNAME, topic: process.env.TOPICARN, msg: 'check params 2'});
                             let publishTextPromise = SNS.publish(params).promise();
                             publishTextPromise.then(
                                 function(data) {
