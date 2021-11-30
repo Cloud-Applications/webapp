@@ -1,7 +1,11 @@
 const client = require('../connection.js');
 const SDC = require('statsd-client');
-const {validateEmail, compare} = require('../helperFunctions');
+const AWS = require("aws-sdk");
+var crypt = require('crypto');
+const {validateEmail, compare, getToken} = require('../helperFunctions');
 const logger = require('../logger');
+const jwt = require('jsonwebtoken');
+var DynamoDB = new aws.DynamoDB.DocumentClient();
 const {
     v4: uuidv4
 } = require('uuid');
@@ -10,6 +14,16 @@ const saltRounds = 10;
 sdc = new SDC({host: 'localhost', port: 8125});
 const a = () => {}
 console.log(typeof a, 'logger');
+const SNS = new AWS.SNS({apiVersion: '2010-03-31'});
+
+const generateAccessToken = (username) => {
+    
+    let SHA= crypt.createHash('sha256');
+    SHA.update(username+token);
+    let HASH = SHA.digest('hex');
+    return HASH;
+}
+
 const createUsers =  (req, res) => {
     let startTime = Date.now();
     sdc.increment('endpoint.user.post');
@@ -62,9 +76,9 @@ const createUsers =  (req, res) => {
                 let get_user_time_elapsed = get_user_end_time - get_user_start_time;
                 sdc.timing('query.user.get.post', get_user_time_elapsed);
                 if (!results.rows.length) {
-                    const text = 'INSERT INTO users(first_name, last_name, password, username, account_created, account_updated, id) VALUES($1, $2,  $3, $4, $5, $6, $7) RETURNING id, first_name, last_name, username, account_created, account_updated'
+                    const text = 'INSERT INTO users(first_name, last_name, password, username, account_created, account_updated, id, verified, verified_on) VALUES($1, $2,  $3, $4, $5, $6, $7, $8, $9) RETURNING id, first_name, last_name, username, account_created, account_updated'
                     const create_user_start_time = Date.now();
-                    const values = [first_name, last_name, hash, username, account_created, account_updated, id];
+                    const values = [first_name, last_name, hash, username, account_created, account_updated, id, true, account_updated];
                     client.query(text, values, (err, result) => {
                         
                         if (err) {
@@ -73,6 +87,34 @@ const createUsers =  (req, res) => {
                                 status: 400,
                             });
                         } else {
+                            const token = generateAccessToken(username);
+                            const dbdata = {username, token}
+                            DynamoDB.put(dbdata, function (error, data) {
+                                if (error){
+                                    console.log("Error in putting item in DynamoDB ", error);
+                                } 
+                                else {
+                                    // sendEmail(message, question, answer);
+                                }
+                            });
+                            const params = {
+                                Message: JSON.stringify({username, token, messageType: "Create User", domainName: process.env.DOMAINNAME, first_name: first_name}),
+                                TopicArn: process.env.TOPICARN,
+                            }
+                            let publishTextPromise = SNS.publish(params).promise();
+                            publishTextPromise.then(
+                                function(data) {
+                                    console.log(`Message sent to the topic ${params.TopicArn}`);
+                                    console.log("MessageID is " + data.MessageId);
+                                    // res.status(201).send(result.toJSON());
+                                    // logger.info("Answer has been posted..!");
+            
+                                }).catch(
+                                function(err) {
+            
+                                    console.error(err, err.stack);
+                                    // res.status(500).send(err)
+                                }); 
                             logger.info('User succcessfully created');
                             res.status(200).json({
                                 status: 200,

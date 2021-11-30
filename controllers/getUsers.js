@@ -45,7 +45,7 @@ const getUsers =  (req, res) => {
                     .then(test => {
                         if(test) {
                             const get_user_start_time = Date.now();
-                            client.query(`Select id, first_name, last_name, username, account_created, account_updated from users where username = $1`, [username], (err, result) => {
+                            client.query(`Select id, first_name, last_name, username, account_created, account_updated, verified, verified_on from users where username = $1`, [username], (err, result) => {
                                 const get_user_end_time = Date.now();
                                 let get_user_time_elapsed = get_user_end_time - get_user_start_time;
                                 sdc.timing('query.user.get.api', get_user_time_elapsed);
