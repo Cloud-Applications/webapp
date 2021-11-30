@@ -19,7 +19,7 @@ const SNS = new AWS.SNS({apiVersion: '2010-03-31'});
 const generateAccessToken = (username) => {
     
     let SHA= crypt.createHash('sha256');
-    SHA.update(username+token);
+    SHA.update(username);
     let HASH = SHA.digest('hex');
     return HASH;
 }

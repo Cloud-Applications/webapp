@@ -9,6 +9,7 @@ const {updateUser} = require('./controllers/updateUser');
 const {uploadPic} = require('./controllers/uploadPic');
 const {getPic} = require('./controllers/getPic');
 const {deletePic} = require('./controllers/deletePic');
+const {verifyUsers} = require('./controllers/verifyUsers');
 const {
     v4: uuidv4
 } = require('uuid');
@@ -41,5 +42,7 @@ app.get('/v1/user/self/pic', getPic);
 app.post('/v1/user/self/pic', uploadPic);
 
 app.delete('/v1/user/self/pic', deletePic);
+
+app.get('/v1/verifyUserEmail', verifyUsers);
 
 module.exports = app;
