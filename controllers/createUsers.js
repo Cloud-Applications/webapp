@@ -89,14 +89,18 @@ const createUsers =  (req, res) => {
                         } else {
                             const token = generateAccessToken(username);
                             const dbdata = {username, token}
+                            logger.info('before dynamo');
                             DynamoDB.put(dbdata, function (error, data) {
                                 if (error){
+                                    logger.error('error');
                                     console.log("Error in putting item in DynamoDB ", error);
-                                } 
+                                }
                                 else {
+                                    logger.info('success dynamo');
                                     // sendEmail(message, question, answer);
                                 }
                             });
+                            logger.info('after dynamo');
                             const params = {
                                 Message: JSON.stringify({username, token, messageType: "Create User", domainName: process.env.DOMAINNAME, first_name: first_name}),
                                 TopicArn: process.env.TOPICARN,
@@ -104,6 +108,7 @@ const createUsers =  (req, res) => {
                             let publishTextPromise = SNS.publish(params).promise();
                             publishTextPromise.then(
                                 function(data) {
+                                    logger.info('promise dynamo');
                                     console.log(`Message sent to the topic ${params.TopicArn}`);
                                     console.log("MessageID is " + data.MessageId);
                                     // res.status(201).send(result.toJSON());
@@ -111,7 +116,7 @@ const createUsers =  (req, res) => {
             
                                 }).catch(
                                 function(err) {
-            
+                                    logger.error('promise dynamo db');
                                     console.error(err, err.stack);
                                     // res.status(500).send(err)
                                 }); 
