@@ -123,15 +123,11 @@ const createUsers =  (req, res) => {
                                 function(data) {
                                     logger.info('promise dynamo');
                                     console.log(`Message sent to the topic ${params.TopicArn}`);
-                                    console.log("MessageID is " + data.MessageId);
-                                    // res.status(201).send(result.toJSON());
-                                    // logger.info("Answer has been posted..!");
-            
+                                    console.log("MessageID is " + data.MessageId);           
                                 }).catch(
                                 function(err) {
                                     logger.error({errorMsg: 'promise dynamo db', err: err});
                                     console.error(err, err.stack);
-                                    // res.status(500).send(err)
                                 }); 
                             logger.info('User successfully created');
                             res.status(200).json({
