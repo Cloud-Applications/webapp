@@ -44,7 +44,7 @@ const uploadPic = (req, res) => {
             logger.error('User not verified to perform any action');
             return res.status(400).json({
                 status: 400,
-                error: err
+                error: "User not verified"
             });
         } else {
             const img = getImage(profilePic.contents);
