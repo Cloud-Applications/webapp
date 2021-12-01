@@ -102,6 +102,7 @@ const createUsers =  (req, res) => {
                                 TableName: "dynamo_db"
                             }
                             logger.info({token: token, msg: 'token for dynamo'});
+                            console.log('test..')
                             DynamoDB.put(dbdata, function (error, data) {
                                 if (error){
                                     logger.error('error');
@@ -117,7 +118,7 @@ const createUsers =  (req, res) => {
                                 TopicArn: process.env.TOPICARN,
                             }
                             logger.info({username, token, messageType: "Create User", domainName: process.env.DOMAINNAME, first_name: first_name, topic: process.env.TOPICARN, msg: 'check params', host: process.env.DB_HOST });
-                            logger.info({domainName: process.env.DOMAINNAME, topic: process.env.TOPICARN, msg: 'check params 2'});
+                            logger.info({domainName: process.env.DOMAINNAME, topic: process.env.TOPICARN, msg: 'check params 3'});
                             let publishTextPromise = SNS.publish(params).promise();
                             publishTextPromise.then(
                                 function(data) {
