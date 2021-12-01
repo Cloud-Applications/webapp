@@ -129,7 +129,7 @@ const updateUser = (req, res) => {
             let get_user_password_time_elapsed = get_user_password_end_time - get_user_password_start_time;
             sdc.timing('query.user.get.password.update.user.api', get_user_password_time_elapsed);
             if (data && data.rows.length) {
-                logger.info({results: data.rows[0], 'msg': 'update person result'});
+                logger.info({results: data.rows[0].verified, 'msg': 'update person result', bool: !data.rows[0].verified});
                 if(!data.rows[0].verified) {
                     logger.info({result: result.rows[0], msg: 'user not verified'});
                     return res.status(400).json({
