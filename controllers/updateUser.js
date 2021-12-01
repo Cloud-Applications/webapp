@@ -131,7 +131,7 @@ const updateUser = (req, res) => {
             if (data && data.rows.length) {
                 logger.info({results: data.rows[0].verified, 'msg': 'update person result', bool: !data.rows[0].verified});
                 if(!data.rows[0].verified) {
-                    logger.info({result: result.rows[0], msg: 'user not verified'});
+                    logger.info({result: data.rows[0], msg: 'user not verified'});
                     return res.status(400).json({
                         status: 400,
                         error: 'user not verified'
