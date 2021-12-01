@@ -42,7 +42,9 @@ const getPic =  (req, res) => {
             sdc.timing('query.user.get.pic.api', get_user_time_elapsed);
             if (data && data.rows.length) {
                 if(!data.rows[0].verified) {
-                    logger.error('User not Verified to perform get pic operation');
+                    logger.info({data: data.rows});
+                    logger.info('User not Verified to perform get pic operation');
+                    
                     return res.status(400).json({
                         status: 400,
                         error: 'User not Verified to perform get pic operation'

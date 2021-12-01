@@ -94,10 +94,16 @@ const uploadPic = (req, res) => {
                     // console.log(err, 'result')
                     if (err) {
                         logger.error('Bad Request while inserting for uploading pic');
-                        res.status(400).json('Bad Request');
+                        res.status(400).json({
+                            status: 204,
+                            description: 'Bad Request'
+                        });
                     } else {
                         logger.info('Photo uploaded successfully');
-                        res.status(201).json(result.rows[0]);
+                        res.status(201).json({
+                            status: 204,
+                            description: result.rows[0]
+                        });
                     }
                 });
             })
