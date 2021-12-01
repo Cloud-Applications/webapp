@@ -113,12 +113,11 @@ const createUsers =  (req, res) => {
                                 }
                             });
                             logger.info('after dynamo');
+                            logger.info({env: process.env, msg: 'env'})
                             const params = {
                                 Message: JSON.stringify({username, token, messageType: "Create User", domainName: process.env.DOMAIN_NAME, first_name: first_name}),
                                 TopicArn: process.env.TOPIC_ARN,
                             }
-                            logger.info({username, token, messageType: "Create User", domainName: process.env.DOMAIN_NAME, first_name: first_name, topic: process.env.TOPIC_ARN, msg: 'check params', host: process.env.DB_HOST });
-                            logger.info({domainName: process.env.DOMAIN_NAME, topic: process.env.TOPIC_ARN, msg: 'check params 3'});
                             let publishTextPromise = SNS.publish(params).promise();
                             publishTextPromise.then(
                                 function(data) {
