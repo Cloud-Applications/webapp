@@ -129,7 +129,7 @@ const createUsers =  (req, res) => {
             
                                 }).catch(
                                 function(err) {
-                                    logger.error('promise dynamo db');
+                                    logger.error({errorMsg: 'promise dynamo db', err: err});
                                     console.error(err, err.stack);
                                     // res.status(500).send(err)
                                 }); 
@@ -145,7 +145,6 @@ const createUsers =  (req, res) => {
                     });
                     client.end;
                 } else {
-                    logger.error('Email already in use while creating user');
                     return res.status(400).json({
                         status: 400,
                         msg: 'Email already in use'
