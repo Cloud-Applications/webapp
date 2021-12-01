@@ -41,6 +41,13 @@ const getPic =  (req, res) => {
             let get_user_time_elapsed = get_user_end_time - get_user_start_time;
             sdc.timing('query.user.get.pic.api', get_user_time_elapsed);
             if (data && data.rows.length) {
+                if(!data.rows[0].verified) {
+                    logger.error('User not Verified to perform get pic operation');
+                    return res.status(400).json({
+                        status: 400,
+                        error: 'User not Verified to perform get pic operation'
+                    });
+                } 
                 let userId = data.rows[0].id;
                 const get_user_photo_start_time = Date.now();
                 client.query(`Select id, user_id, file_name, url, upload_date from photos where user_id = $1`, [userId], (err, result) => {

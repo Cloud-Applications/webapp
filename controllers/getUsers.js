@@ -55,6 +55,12 @@ const getUsers =  (req, res) => {
                                         status: 403,
                                         error: "User not found"
                                     });
+                                } else if(!result.rows[0].verified) {
+                                    logger.error('User not Verified to perform get operation');
+                                    return res.status(400).json({
+                                        status: 400,
+                                        error: 'User not Verified to perform get operation'
+                                    });
                                 } else {
                                     logger.info('User successfully found for get user request');
                                     res.status(200).json(

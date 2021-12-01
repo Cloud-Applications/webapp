@@ -31,10 +31,17 @@ const deletePic =  (req, res) => {
         logger.error('Incorrect email format for user authorization');
         return res.status(401).json('Unauthorized Incorrect username');
     }
-    const fetchUser = `Select id from users where username = $1`
+    const fetchUser = `Select id, verified from users where username = $1`
     client.query(fetchUser, [username])
         .then(data => {
             if (data && data.rows.length) {
+                if(!data.rows[0].verified) {
+                    logger.error('User not verified to perform any action');
+                    return res.status(400).json({
+                        status: 400,
+                        error: 'User not verified'
+                    });
+                }
                 let userId = data.rows[0].id;
                 deleteUtility(userId, res);
             } else {

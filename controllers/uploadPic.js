@@ -27,7 +27,7 @@ const uploadPic = (req, res) => {
     sdc.increment('endpoint.user.upload.pic');
     logger.info('Made user upload pic api call');
     let date = new Date().toISOString().slice(0, 10);
-    const fetchUser = `Select id from users where username = $1`
+    const fetchUser = `Select id, verified from users where username = $1`
     const get_user_start_time = Date.now();
     client.query(fetchUser, [username], (err, result) => {
         const get_user_end_time = Date.now();
@@ -40,6 +40,12 @@ const uploadPic = (req, res) => {
                 error: "Bad Request, No such user found"
             });
             client.end();
+        } else if(!result.rows[0].verified) {
+            logger.error('User not verified to perform any action');
+            return res.status(400).json({
+                status: 400,
+                error: err
+            });
         } else {
             const img = getImage(profilePic.contents);
             const userId = result.rows[0].id
