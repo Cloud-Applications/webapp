@@ -36,7 +36,8 @@ const deletePic =  (req, res) => {
         .then(data => {
             if (data && data.rows.length) {
                 if(!data.rows[0].verified) {
-                    logger.error('User not verified to perform any action');
+                    logger.info({data: data.rows});
+                    logger.info('User not Verified to perform delete pic operation');
                     return res.status(400).json({
                         status: 400,
                         error: 'User not verified'

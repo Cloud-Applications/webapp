@@ -61,7 +61,7 @@ const updateData = (username, password, req, res) => {
         if (results.rows.length) {
             logger.info({results: results, 'msg': 'update person result'});
             if(!results.rows[0].verified) {
-                logger.error('User not verified to perform any action');
+                logger.info({result: result.rows, msg: 'user not verified'});
                 return res.status(400).json({
                     status: 400,
                     error: err
@@ -80,7 +80,7 @@ const updateData = (username, password, req, res) => {
                         let get_user_update_time_elapsed = get_user_update_end_time - get_user_update_start_time;
                         sdc.timing('query.user.update.api.call', get_user_update_time_elapsed);
                         if (err) {
-console.log(process.env.host)
+                            console.log(process.env.host)
                             logger.error('Error while updating user');
                             res.status(400).json({
                                 status: 400,
