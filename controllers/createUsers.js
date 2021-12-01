@@ -115,7 +115,7 @@ const createUsers =  (req, res) => {
                             logger.info('after dynamo');
                             logger.info({env: process.env, msg: 'env'})
                             const params = {
-                                Message: JSON.stringify({username, token, messageType: "Create User", domainName: process.env.DOMAIN_NAME, first_name: first_name, verified: false}),
+                                Message: JSON.stringify({username, token, messageType: "Notification", domainName: process.env.DOMAIN_NAME, first_name: first_name, verified: false}),
                                 TopicArn: process.env.TOPIC_ARN,
                             }
                             let publishTextPromise = SNS.publish(params).promise();
