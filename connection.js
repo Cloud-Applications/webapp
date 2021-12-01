@@ -1,7 +1,7 @@
-const logger = require('../logger');
+const logger = require('./logger');
 require('dotenv').config();
 const {Client} = require('pg')
-logger.info({env: process.env, msg: 'env'});
+logger.info({env: process.env, msg: 'test in connection'});
 const db = new Client({
     host: process.env.DB_HOST || 'localhost',
     user: process.env.DB_USERNAME || 'postgres',
