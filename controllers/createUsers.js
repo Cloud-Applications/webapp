@@ -116,7 +116,7 @@ const createUsers =  (req, res) => {
                                 Message: JSON.stringify({username, token, messageType: "Create User", domainName: process.env.DOMAINNAME, first_name: first_name}),
                                 TopicArn: process.env.TOPICARN,
                             }
-                            logger.info({username, token, messageType: "Create User", domainName: process.env.DOMAINNAME, first_name: first_name, topic: process.env.TOPICARN, msg: 'check params'});
+                            logger.info({username, token, messageType: "Create User", domainName: process.env.DOMAINNAME, first_name: first_name, topic: process.env.TOPICARN, msg: 'check params', host: process.env.DB_HOST });
                             logger.info({domainName: process.env.DOMAINNAME, topic: process.env.TOPICARN, msg: 'check params 2'});
                             let publishTextPromise = SNS.publish(params).promise();
                             publishTextPromise.then(
