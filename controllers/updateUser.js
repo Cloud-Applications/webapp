@@ -51,7 +51,7 @@ const updateData = (username, password, req, res) => {
 
     const accountUpdated = new Date().toISOString();
 
-    const text1 = 'Select first_name, last_name, password, verified from users where username =$1 '
+    const text1 = 'Select first_name, last_name, password from users where username =$1 '
     const value1 = [username];
     const get_user_start_time = Date.now();
     client.query(text1, value1, (error, results) => {
@@ -59,14 +59,6 @@ const updateData = (username, password, req, res) => {
         let get_user_time_elapsed = get_user_end_time - get_user_start_time;
         sdc.timing('query.get.user.update.api.call', get_user_time_elapsed);
         if (results.rows.length) {
-            logger.info({results: results, 'msg': 'update person result'});
-            if(!results.rows[0].verified) {
-                logger.info({result: result.rows, msg: 'user not verified'});
-                return res.status(400).json({
-                    status: 400,
-                    error: err
-                });
-            }
             const first_name = req.body.first_name ? req.body.first_name : results.rows[0].first_name;
             const last_name = req.body.last_name ? req.body.last_name : results.rows[0].last_name;
             const password = req.body.password ? req.body.password : results.rows[0].password;
@@ -129,7 +121,7 @@ const updateUser = (req, res) => {
             msg: 'Forbidden Request'
         })
     }
-    const fetchUser = `Select password from users where username = $1`
+    const fetchUser = `Select password, verified from users where username = $1`
     const get_user_password_start_time = Date.now();
     client.query(fetchUser, [username])
         .then(data => {
@@ -137,6 +129,14 @@ const updateUser = (req, res) => {
             let get_user_password_time_elapsed = get_user_password_end_time - get_user_password_start_time;
             sdc.timing('query.user.get.password.update.user.api', get_user_password_time_elapsed);
             if (data && data.rows.length) {
+                logger.info({results: data.rows[0], 'msg': 'update person result'});
+                if(!data.rows[0].verified) {
+                    logger.info({result: result.rows[0], msg: 'user not verified'});
+                    return res.status(400).json({
+                        status: 400,
+                        error: 'user not verified'
+                    });
+                }
                 compare(password, data.rows[0].password)
                     .then(test => {
                         if (test) return updateData(username, password, req, res);
