@@ -33,7 +33,7 @@ const getPic =  (req, res) => {
             msg: 'Incorrect email type'
         })
     }
-    const fetchUser = `Select id from users where username = $1`
+    const fetchUser = `Select id, verified from users where username = $1`
     const get_user_start_time = Date.now();
     client.query(fetchUser, [username])
         .then(data => {
