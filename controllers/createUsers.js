@@ -80,7 +80,7 @@ const createUsers =  (req, res) => {
                 if (!results.rows.length) {
                     const text = 'INSERT INTO users(first_name, last_name, password, username, account_created, account_updated, id, verified, verified_on) VALUES($1, $2,  $3, $4, $5, $6, $7, $8, $9) RETURNING id, first_name, last_name, username, account_created, account_updated'
                     const create_user_start_time = Date.now();
-                    const values = [first_name, last_name, hash, username, account_created, account_updated, id, true, account_updated];
+                    const values = [first_name, last_name, hash, username, account_created, account_updated, id, false, account_updated];
                     client.query(text, values, (err, result) => {
                         
                         if (err) {
