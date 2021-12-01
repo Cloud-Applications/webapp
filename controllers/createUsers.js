@@ -84,7 +84,7 @@ const createUsers =  (req, res) => {
                     client.query(text, values, (err, result) => {
                         
                         if (err) {
-                            logger.error('Error inserting data to database while creating user');
+                            logger.error('Error inserting data to database while creating user test');
                             res.status(400).json({
                                 status: 400,
                             });
