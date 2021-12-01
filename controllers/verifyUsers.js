@@ -9,7 +9,7 @@ const verifyUsers = (req, res) => {
     logger.info({username: username});
     const text = 'UPDATE public.users SET verified = $1, verified_on = $2 WHERE username =$3'
     const values = [true, new Date().toISOString(), username];
-    client.query(text1, value1, (error, results) => {
+    client.query(text, values, (error, results) => {
         if(error) {
             logger.error('Error while verifying user');
             return res.status(400).json({
