@@ -59,6 +59,7 @@ const updateData = (username, password, req, res) => {
         let get_user_time_elapsed = get_user_end_time - get_user_start_time;
         sdc.timing('query.get.user.update.api.call', get_user_time_elapsed);
         if (results.rows.length) {
+            logger.info({results: results, 'msg': 'update person result'});
             if(!results.rows[0].verified) {
                 logger.error('User not verified to perform any action');
                 return res.status(400).json({
