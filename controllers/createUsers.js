@@ -1,4 +1,4 @@
-const client = require('../connection.js');
+const {client} = require('../connection.js');
 const SDC = require('statsd-client');
 const AWS = require("aws-sdk");
 var crypt = require('crypto');

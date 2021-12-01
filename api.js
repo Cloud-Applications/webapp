@@ -1,4 +1,4 @@
-const {db, db2} = require('./connection.js')
+const {client, db2} = require('./connection.js')
 const express = require('express');
 const app = express();
 const bodyParser = require("body-parser");
@@ -16,8 +16,8 @@ const {
 app.listen(3300, () => {
     console.log("Sever is now listening at port 3300");
 })
-const client = db;
-const client1 = db2;
+// const client = db;
+// const client1 = db2;
 client.connect((err) => {
     if (err) throw err;
     client.query('create table if not exists public.users(id UUID NOT NULL,username VARCHAR(100),password VARCHAR(100),first_name VARCHAR(50),last_name VARCHAR(50),account_created timestamp with time zone,account_updated timestamp with time zone,verified boolean, verified_on timestamp with time zone, PRIMARY KEY (id));', function(error, result) {

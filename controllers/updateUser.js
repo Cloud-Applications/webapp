@@ -1,4 +1,4 @@
-const client = require('../connection.js');
+const {client} = require('../connection.js');
 const {validateEmail, compare} = require('../helperFunctions');
 const {
     v4: uuidv4
