@@ -2,7 +2,7 @@ require('dotenv').config();
 const {Client} = require('pg')
 const { Sequelize } = require("sequelize");
 // const sequelize = new Sequelize("sqlite::memory:");
-const db = new Client({
+const client = new Client({
     host: process.env.DB_HOST || 'localhost',
     user: process.env.DB_USERNAME || 'postgres',
     port: process.env.PORT || '5432',
@@ -40,5 +40,5 @@ const db2 = new Client({
 //     },
 // })
 
-exports.db = db
+exports.client = client
 exports.db2 = db2

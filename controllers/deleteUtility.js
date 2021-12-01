@@ -1,4 +1,4 @@
-const client = require('../connection.js');
+const {client} = require('../connection.js');
 const AWS = require("aws-sdk");
 AWS.config.update({region: "us-east-1"})
 const SDC = require('statsd-client');

@@ -1,4 +1,4 @@
-const client = require('../connection.js');
+const {client} = require('../connection.js');
 const logger = require('../logger');
 var aws = require("aws-sdk");
 var dynamo = new aws.DynamoDB({ region: 'us-east-1'})

@@ -1,8 +1,9 @@
-const client = require('../connection.js');
+const {db2} = require('../connection.js');
 const SDC = require('statsd-client');
 const logger = require('../logger');
 const {validateEmail, compare} = require('../helperFunctions');
 sdc = new SDC({host: 'localhost', port: 8125});
+const client = db2;
 const getUsers =  (req, res) => {
     let startTime = Date.now();
     sdc.increment('endpoint.user.get');

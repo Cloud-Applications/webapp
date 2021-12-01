@@ -1,4 +1,4 @@
-const client = require('../connection.js');
+const {client} = require('../connection.js');
 const multer  = require('multer');
 const {
     v4: uuidv4
