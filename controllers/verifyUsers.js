@@ -1,7 +1,8 @@
 const client = require('../connection.js');
 const logger = require('../logger');
 var aws = require("aws-sdk");
-var DynamoDB = new aws.DynamoDB.DocumentClient();
+var dynamo = new AWS.DynamoDB({ region: 'us-east-1'})
+var DynamoDB = new AWS.DynamoDB.DocumentClient({service: dynamo});
 
 const verifyUsers = (req, res) => {
     console.log(req, res);
