@@ -2,7 +2,7 @@ require('dotenv').config();
 const {Client} = require('pg')
 const { Sequelize } = require("sequelize");
 const fs = require('fs');
-const rdsCa = fs.readFileSync('./prod_harshikagupta_me.ca-bundle');
+const rdsCa = fs.readFileSync('./rds-combined-ca-bundle.pem');
 // const sequelize = new Sequelize("sqlite::memory:");
 const client = new Client({
     host: process.env.DB_HOST || 'localhost',
