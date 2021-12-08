@@ -1,12 +1,15 @@
 require('dotenv').config();
 const {Client} = require('pg')
 const { Sequelize } = require("sequelize");
+const fs = require('fs');
+const rdsCa = fs.readFileSync('./prod_harshikagupta_me.ca-bundle');
 // const sequelize = new Sequelize("sqlite::memory:");
 const client = new Client({
     host: process.env.DB_HOST || 'localhost',
     user: process.env.DB_USERNAME || 'postgres',
     ssl: {
-        sslmode = 'require'
+        rejectUnauthorized: true,
+        ca: [rdsCa]
     },
     port: process.env.PORT || '5432',
     password: process.env.DB_PASSWORD || 'Harshika@123',
@@ -19,6 +22,10 @@ const db2 = new Client({
     host: process.env.Replica_DB_HOST || 'localhost',
     user: process.env.DB_USERNAME || 'postgres',
     port: process.env.PORT || '5432',
+    ssl: {
+        rejectUnauthorized: true,
+        ca: [rdsCa]
+    },
     password: process.env.DB_PASSWORD || 'Harshika@123',
     database: process.env.DB_NAME || 'postgres',
     metrics_hostname: "localhost",
